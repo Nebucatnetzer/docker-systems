@@ -1,0 +1,53 @@
+version: '2'
+services:
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: ${HOSTNAME}
+    domainname: ${DOMAINNAME}
+    container_name: ${CONTAINER_NAME}
+    ports:
+      - "25:25"
+      - "587:587"
+      - "993:993"
+      - "995:995"
+    volumes:
+      - ./mailserver/maildata:/var/mail
+      - ./mailserver/mail-state:/var/mail-state
+      - ./mailserver/maillogs:/var/log/mail
+      - ./mailserver/config:/tmp/docker-mailserver/
+      - ./letsencrypt/etc/letsencrypt/:/etc/letsencrypt
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+      - env-mailserver
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    dns: 1.1.1.1
+    restart: always
+
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    container_name: letsencrypt
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - "PUID=${PUID}"
+      - "PGID=${PGID}"
+      - "TZ=${TZ}"
+      - "URL=${URL}"
+      - "VALIDATION=${VALIDATION}"
+      - "EMAIL=${EMAIL}"
+      - "DHLEVEL=${DHLEVEL}"
+    volumes:
+      - ./letsencrypt:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+
+volumes:
+  maildata:
+    driver: local
+  maillogs:
+    driver: local
