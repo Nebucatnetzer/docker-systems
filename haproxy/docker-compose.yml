@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+ gateway:
+  image: haproxy
+  volumes:
+    - ./config:/usr/local/etc/haproxy:ro
+  ports:
+   - 80:80
+   - 443:443
+  network_mode: "host"
