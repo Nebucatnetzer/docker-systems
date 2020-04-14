@@ -1,0 +1,14 @@
+version: '2'
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    environment:
+      - "TZ=${TZ}"
+      - "PLEX_CLAIM=${PLEX_CLAIM}"
+    network_mode: host
+    volumes:
+      - ./config:/config
+      - ./tmp:/transcode
+      - /mnt/media:/mnt/media
