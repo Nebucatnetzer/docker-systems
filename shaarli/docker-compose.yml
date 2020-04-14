@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    ports:
+      - "443:443"
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  shaarli-andreas:
+    image: shaarli/shaarli
+    volumes:
+      - ./andreas/cache:/var/www/shaarli/cache
+      - ./andreas/data:/var/www/shaarli/data
+      - ./andreas/tpl:/var/www/shaarli/tpl
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shaarli-andreas.rule=Host(`shaarli-andreas.2li.ch`)"
+      - "traefik.http.routers.shaarli-andreas.entrypoints=websecure"
+      - "traefik.http.routers.shaarli-andreas.tls.certresolver=myresolver"
+    restart: unless-stopped
+
+  shaarli-gecko:
+    image: shaarli/shaarli
+    volumes:
+      - ./gecko/cache:/var/www/shaarli/cache
+      - ./gecko/data:/var/www/shaarli/data
+      - ./gecko/tpl:/var/www/shaarli/tpl
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shaarli-gecko.rule=Host(`shaarli-gecko.2li.ch`)"
+      - "traefik.http.routers.shaarli-gecko.entrypoints=websecure"
+      - "traefik.http.routers.shaarli-gecko.tls.certresolver=myresolver"
+    restart: unless-stopped
