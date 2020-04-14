@@ -1,0 +1,55 @@
+version: '3'
+volumes:
+  db:
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    ports:
+      - "443:443"
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  wallabag:
+    image: wallabag/wallabag
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "SYMFONY__ENV__DATABASE_DRIVER=${SYMFONY__ENV__DATABASE_DRIVER}"
+      - SYMFONY__ENV__DATABASE_HOST=db
+      - "SYMFONY__ENV__DATABASE_PORT=${SYMFONY__ENV__DATABASE_PORT}"
+      - "SYMFONY__ENV__DATABASE_NAME=${SYMFONY__ENV__DATABASE_NAME}"
+      - "SYMFONY__ENV__DATABASE_USER=${SYMFONY__ENV__DATABASE_USER}"
+      - "SYMFONY__ENV__DATABASE_PASSWORD=${SYMFONY__ENV__DATABASE_PASSWORD}"
+      - SYMFONY__ENV__DATABASE_CHARSET=utf8mb4
+      - "SYMFONY__ENV__MAILER_HOST=${SYMFONY__ENV__MAILER_HOST}"
+      - "SYMFONY__ENV__MAILER_USER=${SYMFONY__ENV__MAILER_USER}"
+      - "SYMFONY__ENV__MAILER_PASSWORD=${SYMFONY__ENV__MAILER_PASSWORD}"
+      - "SYMFONY__ENV__FROM_EMAIL=${SYMFONY__ENV__FROM_EMAIL}"
+      - "SYMFONY__ENV__DOMAIN_NAME=https://${APP_DOMAIN}"
+    volumes:
+      - ./images:/var/www/wallabag/web/assets/images
+    links:
+      - redis:redis
+    depends_on:
+      - db
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wallabag.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.wallabag.entrypoints=websecure"
+      - "traefik.http.routers.wallabag.tls.certresolver=myresolver"
+    restart: unless-stopped
+  db:
+    image: mariadb
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - db:/var/lib/mysql
+    restart: unless-stopped
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    restart: unless-stopped
