@@ -16,17 +16,17 @@ services:
   gitea:
     image: gitea/gitea:1
     environment:
-      - "USER_UID=${USER_UID}"
-      - "USER_GID=${USER_GID}"
-      - "DB_TYPE=${DB_TYPE}"
+      - USER_UID
+      - USER_GID
+      - DB_TYPE
       - "DB_HOST=db:${DB_PORT}"
       - "DB_NAME=${MYSQL_DATABASE}"
       - "DB_USER=${MYSQL_USER}"
       - "DB_PASSWD=${MYSQL_PASSWORD}"
       - "ROOT_URL=${APP_DOMAIN}"
       - INSTALL_LOCK=true
-      - "SECRET_KEY=${SECRET_KEY}"
-      - "DISABLE_REGISTRATION=${DISABLE_REGISTRATION}"
+      - SECRET_KEY
+      - DISABLE_REGISTRATION
     volumes:
       - ./data:/data
       - /etc/timezone:/etc/timezone:ro
@@ -50,8 +50,8 @@ services:
     volumes:
       - db:/var/lib/mysql
     environment:
-      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-      - "MYSQL_USER=${MYSQL_USER}"
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
     restart: unless-stopped

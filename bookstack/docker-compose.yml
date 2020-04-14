@@ -8,14 +8,14 @@
       image: linuxserver/bookstack
       container_name: bookstack
       environment:
-        - "PUID=${PUID}"
-        - "PGID=${PGID}"
-        - "TZ=${TZ}"
-        - "DB_HOST=${DB_HOST}"
+        - PUID
+        - PGID
+        - TZ
+        - DB_HOST
         - "DB_USER=${MYSQL_USER}"
         - "DB_PASS=${MYSQL_PASSWORD}"
         - "DB_DATABASE=${MYSQL_DATABASE}"
-        - "APP_URL=${APP_URL}"
+        - APP_URL
       volumes:
         - ./config:/config
       depends_on:
@@ -30,10 +30,10 @@
     db:
       image: mariadb:10.3
       environment:
-        - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
-        - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-        - "MYSQL_USER=${MYSQL_USER}"
-        - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+        - MYSQL_RANDOM_ROOT_PASSWORD
+        - MYSQL_DATABASE
+        - MYSQL_USER
+        - MYSQL_PASSWORD
       volumes:
         - db:/var/lib/mysql
       restart: unless-stopped

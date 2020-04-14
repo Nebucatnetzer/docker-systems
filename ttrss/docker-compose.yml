@@ -17,14 +17,14 @@ services:
     image: lunik1/tt-rss
     container_name: tt-rss
     environment:
-      - "PUID=${PUID}"
-      - "PGID=${PGID}"
-      - "TZ=${TZ}"
-      - "DB_TYPE=${DB_TYPE}"
+      - PUID
+      - PGID
+      - TZ
+      - DB_TYPE
       - "DB_USER=${MYSQL_USER}"
       - "DB_NAME=${MYSQL_DATABASE}"
       - "DB_PASS=${MYSQL_PASSWORD}"
-      - "DB_PORT=${DB_PORT}"
+      - DB_PORT
       - DB_HOST=db
       - "SELF_URL_PATH=https://${APP_DOMAIN}"
     volumes:
@@ -47,7 +47,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     environment:
-      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-      - "MYSQL_USER=${MYSQL_USER}"
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER

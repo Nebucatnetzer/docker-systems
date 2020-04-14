@@ -32,13 +32,13 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - "PUID=${PUID}"
-      - "PGID=${PGID}"
-      - "TZ=${TZ}"
-      - "URL=${URL}"
-      - "VALIDATION=${VALIDATION}"
-      - "EMAIL=${EMAIL}"
-      - "DHLEVEL=${DHLEVEL}"
+      - PUID
+      - PGID
+      - TZ
+      - URL
+      - VALIDATION
+      - EMAIL
+      - DHLEVEL
     volumes:
       - ./letsencrypt:/config
     ports:
