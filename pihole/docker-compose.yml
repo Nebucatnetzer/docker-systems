@@ -1,0 +1,21 @@
+version: "2"
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    network_mode: "host"
+    environment:
+      - "TZ=${TZ}"
+      - "WEBPASSWORD=${WEBPASSWORD}"
+      - "ServerIP=${ServerIP}"
+      - "DNS1=${DNS1}"
+      - "DNS2=${DNS2}"
+    volumes:
+       - ./etc-pihole:/etc/pihole/
+       - ./etc-dnsmasq.d:/etc/dnsmasq.d/
+    dns:
+      - "${DNS3}"
+      - "${DNS1}"
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
