@@ -1,0 +1,57 @@
+version: "2"
+
+volumes:
+  db:
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    ports:
+      - "443:443"
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  gitea:
+    image: gitea/gitea:1
+    environment:
+      - "USER_UID=${USER_UID}"
+      - "USER_GID=${USER_GID}"
+      - "DB_TYPE=${DB_TYPE}"
+      - "DB_HOST=db:${DB_PORT}"
+      - "DB_NAME=${MYSQL_DATABASE}"
+      - "DB_USER=${MYSQL_USER}"
+      - "DB_PASSWD=${MYSQL_PASSWORD}"
+      - "ROOT_URL=${APP_DOMAIN}"
+      - INSTALL_LOCK=true
+      - "SECRET_KEY=${SECRET_KEY}"
+      - "DISABLE_REGISTRATION=${DISABLE_REGISTRATION}"
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.git.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.git.entrypoints=websecure"
+      - "traefik.http.routers.git.tls.certresolver=myresolver"
+      - "traefik.http.services.git.loadbalancer.server.port=3000"
+    ports:
+      - "2222:22"
+    links:
+      - db:db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+    restart: unless-stopped
