@@ -1,0 +1,53 @@
+---
+version: "2"
+volumes:
+  db:
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    ports:
+      - "443:443"
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  tt-rss:
+    image: lunik1/tt-rss
+    container_name: tt-rss
+    environment:
+      - "PUID=${PUID}"
+      - "PGID=${PGID}"
+      - "TZ=${TZ}"
+      - "DB_TYPE=${DB_TYPE}"
+      - "DB_USER=${MYSQL_USER}"
+      - "DB_NAME=${MYSQL_DATABASE}"
+      - "DB_PASS=${MYSQL_PASSWORD}"
+      - "DB_PORT=${DB_PORT}"
+      - DB_HOST=db
+      - "SELF_URL_PATH=https://${APP_DOMAIN}"
+    volumes:
+      - ./config:/config
+    depends_on:
+      - db
+    links:
+      - db:db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ttrss.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.ttrss.entrypoints=websecure"
+      - "traefik.http.routers.ttrss.tls.certresolver=myresolver"
+    restart: always
+
+  db:
+    image: mariadb:10.3-bionic
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
