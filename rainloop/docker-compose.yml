@@ -11,6 +11,7 @@ services:
       - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
 
   rainloop:
     image: hiloyt/rainloop
