@@ -18,6 +18,7 @@ services:
       - ./upload:/var/www/firefly-iii/storage/upload
     depends_on:
       - fireflyiiidb
+    env_file: .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.firefly.rule=Host(`${APP_DOMAIN}`)"
