@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: "traefik:v2.2"
+    ports:
+      - "443:443"
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+
+  fireflyiii:
+    image: jc5x/firefly-iii:latest
+    volumes:
+      - ./export:/var/www/firefly-iii/storage/export
+      - ./upload:/var/www/firefly-iii/storage/upload
+    depends_on:
+      - fireflyiiidb
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.firefly.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.firefly.entrypoints=websecure"
+      - "traefik.http.routers.firefly.tls.certresolver=myresolver"
+
+  fireflyiiidb:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./db:/var/lib/postgresql/data
