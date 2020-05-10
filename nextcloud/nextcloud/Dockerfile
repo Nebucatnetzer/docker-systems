@@ -1,4 +1,4 @@
-ROM nextcloud:apache
+FROM nextcloud:apache
 
 RUN set -ex; \
     \
