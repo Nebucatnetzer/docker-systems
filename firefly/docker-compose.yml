@@ -32,6 +32,3 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./db:/var/lib/postgresql/data
-  cron:
-    image: alpine
-    command: sh -c "echo \"0 3 * * * wget https://firefly.zweili.org/cron/run/${CRON_TOKEN}\" | crontab - && crond -f -L /dev/stdout"
