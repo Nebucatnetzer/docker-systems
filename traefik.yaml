@@ -15,7 +15,7 @@ certificatesResolvers:
       email: "admin@example.ch"
       storage: "/letsencrypt/acme.json"
       tlsChallenge: true
-      #caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
 
 tls:
   options:
