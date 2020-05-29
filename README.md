@@ -1,6 +1,7 @@
-# docker_systems
+# Docker Systems
 
-A collection of my docker-compose files I'm currently using.
+A collection of my docker-compose files.
+Not all of the configurations are in active use.
 
 The files which are at the root folder are the same for every application.
 The `traefik.yaml` file for example is used with all configurations which use Traefik.
