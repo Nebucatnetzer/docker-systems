@@ -52,6 +52,7 @@ services:
       - redis
     volumes:
       - ./data:/var/www/html
+      - ./custom-php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(`${APP_DOMAIN}`)"
