@@ -1,0 +1,51 @@
+version: '3'
+services:
+  synapse:
+    image: docker.io/matrixdotorg/synapse:latest
+    restart: unless-stopped
+    # See the readme for a full documentation of the environment settings
+    environment:
+      - SYNAPSE_SERVER_NAME=example.com
+      - SYNAPSE_REPORT_STATS=no
+      - SYNAPSE_ENABLE_REGISTRATION=no
+      - SYNAPSE_LOG_LEVEL=INFO
+      - POSTGRES_PASSWORD=foo
+      - SYNAPSE_NO_TLS=True
+    volumes:
+      - ./synapse:/data
+    depends_on:
+      - db
+    ports:
+      - 8008:8008/tcp
+  db:
+    image: docker.io/postgres:10-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=foo
+      - POSTGRES_MULTIPLE_DATABASES=telegram-bridge,whatsapp-bridge
+    volumes:
+      - ./db:/var/lib/postgresql/data
+  riot:
+    image: vectorim/riot-web
+    restart: unless-stopped
+    depends_on:
+      - synapse
+    ports:
+      - 80:80
+    volumes:
+      - ./riot/config.json:/app/config.json
+    
+  whatsapp-bridge:
+    image: dock.mau.dev/tulir/mautrix-whatsapp
+    depends_on:
+      - synapse
+    volumes:
+      - ./whatsapp:/data
+
+  telegram-bridge:
+      image: dock.mau.dev/tulir/mautrix-telegram:latest
+      depends_on:
+        - synapse
+      volumes:
+      - ./telegram:/data

@@ -1,0 +1,13 @@
+id: telegram
+as_token: foo
+hs_token: bar
+namespaces:
+    users:
+    - exclusive: true
+      regex: '@telegram_.+:example.com'
+    aliases:
+    - exclusive: true
+      regex: '#telegram_.+:example.com'
+url: http://telegram-bridge:29317
+sender_localpart: telegrambot
+rate_limited: false
