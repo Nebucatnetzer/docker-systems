@@ -51,7 +51,7 @@ services:
             - "traefik.http.routers.jitsi.rule=Host(`jitsi.zweili.org`)"
             - "traefik.http.routers.jitsi.entrypoints=websecure"
             - "traefik.http.routers.jitsi.tls.certresolver=myresolver"
-              - "traefik.http.routers.jitsi.middlewares=default-headers@file"
+            - "traefik.http.routers.jitsi.middlewares=default-headers@file"
         networks:
             meet.jitsi:
                 aliases:
