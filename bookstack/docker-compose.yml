@@ -1,7 +1,5 @@
 ---
   version: "2"
-  volumes:
-    db:
 
   services:
     bookstack:
@@ -35,5 +33,5 @@
         - MYSQL_USER
         - MYSQL_PASSWORD
       volumes:
-        - db:/var/lib/mysql
+        - ./db:/var/lib/mysql
       restart: unless-stopped

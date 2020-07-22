@@ -1,6 +1,4 @@
 version: '3'
-volumes:
-  db:
 
 services:
   traefik:
@@ -48,7 +46,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD
     volumes:
-      - db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     restart: unless-stopped
   redis:
     image: redis:alpine

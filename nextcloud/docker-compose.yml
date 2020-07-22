@@ -1,8 +1,5 @@
 version: '2'
 
-volumes:
-  db:
-
 services:
   traefik:
     image: "traefik:v2.2"
@@ -19,7 +16,7 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: unless-stopped
     volumes:
-      - db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_PASSWORD

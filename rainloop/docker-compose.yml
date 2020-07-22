@@ -1,6 +1,4 @@
 version: "2"
-volumes:
-  db:
 
 services:
   traefik:
@@ -32,7 +30,7 @@ services:
     image: mariadb
     restart: unless-stopped
     volumes:
-      - db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD
       - MYSQL_PASSWORD
