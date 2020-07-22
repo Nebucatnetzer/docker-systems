@@ -22,6 +22,7 @@ services:
       - "traefik.http.routers.shaarli-andreas.rule=Host(`shaarli-andreas.2li.ch`)"
       - "traefik.http.routers.shaarli-andreas.entrypoints=websecure"
       - "traefik.http.routers.shaarli-andreas.tls.certresolver=myresolver"
+      - "traefik.http.routers.shaarli-andreas.middlewares=default-headers@file"
     restart: unless-stopped
 
   shaarli-gecko:
@@ -35,4 +36,5 @@ services:
       - "traefik.http.routers.shaarli-gecko.rule=Host(`shaarli-gecko.2li.ch`)"
       - "traefik.http.routers.shaarli-gecko.entrypoints=websecure"
       - "traefik.http.routers.shaarli-gecko.tls.certresolver=myresolver"
+      - "traefik.http.routers.shaarli-gecko.middlewares=default-headers@file"
     restart: unless-stopped

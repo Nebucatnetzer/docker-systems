@@ -24,6 +24,7 @@ services:
       - "traefik.http.routers.firefly.rule=Host(`${APP_DOMAIN}`)"
       - "traefik.http.routers.firefly.entrypoints=websecure"
       - "traefik.http.routers.firefly.tls.certresolver=myresolver"
+      - "traefik.http.routers.firefly.middlewares=default-headers@file"
 
   fireflyiiidb:
     image: postgres:10-alpine

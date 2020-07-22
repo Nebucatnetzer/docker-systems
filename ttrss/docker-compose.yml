@@ -39,6 +39,7 @@ services:
       - "traefik.http.routers.ttrss.rule=Host(`${APP_DOMAIN}`)"
       - "traefik.http.routers.ttrss.entrypoints=websecure"
       - "traefik.http.routers.ttrss.tls.certresolver=myresolver"
+      - "traefik.http.routers.ttrss.middlewares=default-headers@file"
     restart: always
 
   db:

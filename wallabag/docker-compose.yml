@@ -41,6 +41,7 @@ services:
       - "traefik.http.routers.wallabag.rule=Host(`${APP_DOMAIN}`)"
       - "traefik.http.routers.wallabag.entrypoints=websecure"
       - "traefik.http.routers.wallabag.tls.certresolver=myresolver"
+      - "traefik.http.routers.wallabag.middlewares=default-headers@file"
     restart: unless-stopped
   db:
     image: mariadb

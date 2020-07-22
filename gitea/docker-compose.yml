@@ -35,6 +35,7 @@ services:
       - "traefik.http.routers.git.entrypoints=websecure"
       - "traefik.http.routers.git.tls.certresolver=myresolver"
       - "traefik.http.services.git.loadbalancer.server.port=3000"
+      - "traefik.http.routers.git.middlewares=default-headers@file"
     ports:
       - "2222:22"
     links:
