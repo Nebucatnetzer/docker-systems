@@ -1,0 +1,16 @@
+---
+version: '2'
+services:
+  pyload:
+    image: linuxserver/pyload
+    container_name: pyload
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Zurich
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    ports:
+      - 80:8000
+      - 9666:9666
