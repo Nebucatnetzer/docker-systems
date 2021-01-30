@@ -81,3 +81,5 @@ tags
 
 letsencrypt/
 traefik.yaml
+
+grav/data/

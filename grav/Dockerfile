@@ -1,78 +1,45 @@
-FROM php:7.4-apache
-LABEL maintainer="Andy Miller <rhuk@getgrav.org> (@rhukster)"
+FROM alpine
 
-# Enable Apache Rewrite + Expires Module
-RUN a2enmod rewrite expires && \
-    sed -i 's/ServerTokens OS/ServerTokens ProductOnly/g' \
-    /etc/apache2/conf-available/security.conf
+ARG BUILD_DATE
+ARG VCS_REF
 
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    unzip \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libyaml-dev \
-    libzip4 \
-    libzip-dev \
-    zlib1g-dev \
-    libicu-dev \
-    g++ \
-    git \
-    cron \
-    vim \
-    && docker-php-ext-install opcache \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install zip \
-    && rm -rf /var/lib/apt/lists/*
+LABEL maintainer="Dominic Taylor <dominic@yobasystems.co.uk>" \
+    architecture="amd64/x86_64" \
+    grav-version="latest" \
+    alpine-version="3.10.1" \
+    build="19-Aug-2019" \
+    org.opencontainers.image.title="alpine-grav" \
+    org.opencontainers.image.description="Grav Docker image running on Alpine Linux" \
+    org.opencontainers.image.authors="Dominic Taylor <dominic@yobasystems.co.uk>" \
+    org.opencontainers.image.vendor="Yoba Systems" \
+    org.opencontainers.image.version="latest" \
+    org.opencontainers.image.url="https://hub.docker.com/r/yobasystems/alpine-grav/" \
+    org.opencontainers.image.source="https://github.com/yobasystems/alpine-grav" \
+    org.opencontainers.image.revision=$VCS_REF \
+    org.opencontainers.image.created=$BUILD_DATE
 
-# set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-    echo 'opcache.memory_consumption=128'; \
-    echo 'opcache.interned_strings_buffer=8'; \
-    echo 'opcache.max_accelerated_files=4000'; \
-    echo 'opcache.revalidate_freq=2'; \
-    echo 'opcache.fast_shutdown=1'; \
-    echo 'opcache.enable_cli=1'; \
-    echo 'upload_max_filesize=128M'; \
-    echo 'post_max_size=128M'; \
-    echo 'expose_php=off'; \
-    } > /usr/local/etc/php/conf.d/php-recommended.ini
+ENV TERM="xterm" \
+    GRAV_VERSION="1.6.14"
 
-RUN pecl install apcu \
-    && pecl install yaml-2.0.4 \
-    && docker-php-ext-enable apcu yaml
+RUN apk add --no-cache bash ca-certificates curl git less musl nginx tzdata vim yaml zip \
+    php7-fpm php7-json php7-zlib php7-xml php7-pdo php7-phar php7-openssl \
+    php7-gd php7-iconv php7-mcrypt php7-session php7-zip \
+    php7-curl php7-opcache php7-ctype php7-apcu \
+    php7-intl php7-bcmath php7-dom php7-mbstring php7-simplexml php7-xmlreader && \
+    rm -rf /var/cache/apk/*
 
-# Set user to www-data
-RUN chown www-data:www-data /var/www
-USER www-data
+RUN sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
+    sed -i 's/expose_php = On/expose_php = Off/g' /etc/php7/php.ini && \
+    sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/usr:\/bin\/bash/g" /etc/passwd && \
+    sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/usr:\/bin\/bash/g" /etc/passwd- && \
+    ln -s /sbin/php-fpm7 /sbin/php-fpm
 
-# Define Grav specific version of Grav or use latest stable
-ENV GRAV_VERSION latest
+ADD files/nginx.conf /etc/nginx/
+ADD files/php-fpm.conf /etc/php7/
+ADD files/run.sh /
+RUN chmod +x /run.sh
 
-# Install grav
-WORKDIR /var/www
-RUN curl -o grav-admin.zip -SL https://getgrav.org/download/core/grav-admin/${GRAV_VERSION} && \
-    unzip grav-admin.zip && \
-    mv -T /var/www/grav-admin /var/www/html && \
-    rm grav-admin.zip
 
-# Create cron job for Grav maintenance scripts
-RUN (crontab -l; echo "* * * * * cd /var/www/html;/usr/local/bin/php bin/grav scheduler 1>> /dev/null 2>&1") | crontab -
-
-# Return to root user
-USER root
-
-# Copy init scripts
-# COPY docker-entrypoint.sh /entrypoint.sh
-
-# provide container inside image for data persistence
-VOLUME ["/var/www/html"]
-
-# ENTRYPOINT ["/entrypoint.sh"]
-# CMD ["apache2-foreground"]
-CMD ["sh", "-c", "cron && apache2-foreground"]
+EXPOSE 80
+VOLUME ["/usr"]
+CMD ["/run.sh"]
