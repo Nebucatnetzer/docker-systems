@@ -22,8 +22,8 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.git.rule=Host(`2li.ch`) || Host(`www.2li.ch`)"
-      - "traefik.http.routers.git.entrypoints=websecure"
-      - "traefik.http.routers.git.tls.certresolver=myresolver"
-      - "traefik.http.services.git.loadbalancer.server.port=3000"
-      - "traefik.http.routers.git.middlewares=default-headers@file"
+      - "traefik.http.routers.grav.rule=Host(`2li.ch`,`www.2li.ch`)"
+      - "traefik.http.routers.grav.entrypoints=websecure"
+      - "traefik.http.routers.grav.tls.certresolver=myresolver"
+      - "traefik.http.services.grav.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grav.middlewares=default-headers@file"
