@@ -1,7 +1,5 @@
 #!/bin/ash
 
-[ -f /run-pre.sh ] && /run-pre.sh
-
 if [ ! -d /usr/html ] ; then
   mkdir -p /usr/html
   chown -R nginx:nginx /usr/html
