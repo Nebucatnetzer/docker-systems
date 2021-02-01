@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/bash
 
 if [ ! -d /usr/html ] ; then
   mkdir -p /usr/html
