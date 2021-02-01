@@ -15,8 +15,6 @@ services:
     build: .
     environment:
       VIRTUAL_HOST: www.2li.ch
-    ports:
-      - 8080:80
     volumes:
       - ./data:/usr/html
       - /etc/timezone:/etc/timezone:ro
