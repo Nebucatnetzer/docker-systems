@@ -25,5 +25,5 @@ services:
       - "traefik.http.routers.grav.rule=Host(`2li.ch`,`www.2li.ch`)"
       - "traefik.http.routers.grav.entrypoints=websecure"
       - "traefik.http.routers.grav.tls.certresolver=myresolver"
-      - "traefik.http.services.grav.loadbalancer.server.port=3000"
+      - "traefik.http.services.grav.loadbalancer.server.port=80"
       - "traefik.http.routers.grav.middlewares=default-headers@file"
