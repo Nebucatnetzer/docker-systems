@@ -13,9 +13,11 @@ services:
   code-server:
     image: codercom/code-server
     volumes:
-      - "./data:/home/coder/project"
+      - "./config:/home/coder/.config"
+      - "./projects:/home/code/project"
     environment:
       - "PASSWORD"
+      - DOCKER_USER=$USER
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
