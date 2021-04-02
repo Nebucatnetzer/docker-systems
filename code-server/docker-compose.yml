@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 services:
   traefik:
     image: "traefik:v2.2"
@@ -16,7 +16,7 @@ services:
       - "./config:/home/coder/.config"
       - "./projects:/home/code/project"
     environment:
-      - "PASSWORD"
+      - PASSWORD
       - DOCKER_USER=$USER
     restart: unless-stopped
     labels:
