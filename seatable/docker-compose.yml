@@ -1,0 +1,37 @@
+version: "3.0"
+services:
+  db:
+    image: mariadb:10.5
+    container_name: seatable-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_LOG_CONSOLE=true
+    volumes:
+      - ./db_data:/var/lib/mysql # Requested, specifies the path to MySQL data persistent store.
+
+  memcached:
+    image: memcached:1.5.6
+    container_name: seatable-memcached
+    entrypoint: memcached -m 256
+
+  redis:
+    image: redis:5.0.7
+    container_name: seatable-redis
+
+  seatable:
+    image: seatable/seatable:latest
+    ports:
+      - "80:80"
+      - "443:443" # If https is enabled, cancel the comment.
+    volumes:
+      - ./seatable-data:/shared # Requested, specifies the path to Seafile data persistent store.
+    environment:
+      - DB_HOST=db
+      - DB_ROOT_PASSWD=${MYSQL_ROOT_PASSWORD} # Requested, the value should be root's password of MySQL service.
+      - SEATABLE_SERVER_LETSENCRYPT=True # Default is False. Whether to use let's encrypt certificate.
+      - SEATABLE_SERVER_HOSTNAME=seatable.2li.ch # Specifies your host name.
+      - TIME_ZONE=Europe/Zurich # Optional, default is UTC. Should be uncomment and set to your local time zone.
+    depends_on:
+      - db
+      - memcached
+      - redis
