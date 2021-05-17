@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mail:
@@ -21,14 +21,14 @@ services:
       - ./config/:/tmp/docker-mailserver/${SELINUX_LABEL}
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    cap_add: [ "NET_ADMIN", "SYS_PTRACE" ]
+    cap_add: ["NET_ADMIN", "SYS_PTRACE"]
 
   letsencrypt:
     image: linuxserver/letsencrypt
     container_name: letsencrypt
     cap_add:
       - NET_ADMIN
-    env_file: .env.letsencrypt
+    env_file: letsencrypt.env
     environment:
       - PUID
       - PGID
