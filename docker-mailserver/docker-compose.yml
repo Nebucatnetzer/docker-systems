@@ -1,20 +1,18 @@
 version: "3.8"
 
 services:
-  traefik:
-    image: "traefik:v2.4.8"
-    ports:
-      - "443:443"
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    container_name: letsencrypt
+    cap_add:
+      - NET_ADMIN
+    env_file: letsencrypt.env
     volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./letsencrypt:/config
+    ports:
+      - 80:80
+      - 443:443
     restart: unless-stopped
-
-  whoami:
-    image: docker.io/traefik/whoami:latest
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`mail.zweili.org`)"
 
   mail:
     image: docker.io/mailserver/docker-mailserver:9.1.0
@@ -28,7 +26,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - ./letsencrypt:/etc/letsencrypt
+      - ./letsencrypt/etc/letsencrypt:/etc/letsencrypt
       - ./maildata:/var/mail
       - ./mailstate:/var/mail-state
       - ./maillogs:/var/log/mail
