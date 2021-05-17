@@ -29,14 +29,6 @@ services:
     cap_add:
       - NET_ADMIN
     env_file: letsencrypt.env
-    environment:
-      - "PUID=${PUID}"
-      - "PGID=${PGID}"
-      - "TZ=${TZ}"
-      - "URL=${URL}"
-      - "VALIDATION=${VALIDATION}"
-      - "EMAIL=${EMAIL}"
-      - "DHLEVEL=${DHLEVEL}"
     volumes:
       - ./letsencrypt:/config
     ports:
