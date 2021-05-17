@@ -20,6 +20,10 @@ services:
       - ./maillogs:/var/log/mail
       - ./config/:/tmp/docker-mailserver/${SELINUX_LABEL}
       - /etc/localtime:/etc/localtime:ro
+    dns:
+      - 84.200.69.80
+      - 84.200.70.40
+      - 1.1.1.1
     restart: unless-stopped
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
 
