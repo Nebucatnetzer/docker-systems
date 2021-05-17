@@ -1,36 +1,34 @@
-version: '2'
+version: '3.8'
+
 services:
   mail:
-    image: tvial/docker-mailserver:latest
+    image: docker.io/mailserver/docker-mailserver:v9.1.0
     hostname: ${HOSTNAME}
     domainname: ${DOMAINNAME}
     container_name: ${CONTAINER_NAME}
+    env_file: mailserver.env
+    # To avoid conflicts with yaml base-60 float, DO NOT remove the quotation marks.
     ports:
       - "25:25"
+      - "143:143"
       - "587:587"
       - "993:993"
-      - "995:995"
     volumes:
-      - ./mailserver/maildata:/var/mail
-      - ./mailserver/mail-state:/var/mail-state
-      - ./mailserver/maillogs:/var/log/mail
-      - ./mailserver/config:/tmp/docker-mailserver/
       - ./letsencrypt/etc/letsencrypt/:/etc/letsencrypt
+      - ./maildata:/var/mail
+      - ./mailstate:/var/mail-state
+      - ./maillogs:/var/log/mail
+      - ./config/:/tmp/docker-mailserver/${SELINUX_LABEL}
       - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - .env
-      - env-mailserver
-    cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
-    dns: 1.1.1.1
-    restart: always
+    restart: unless-stopped
+    cap_add: [ "NET_ADMIN", "SYS_PTRACE" ]
 
   letsencrypt:
     image: linuxserver/letsencrypt
     container_name: letsencrypt
     cap_add:
       - NET_ADMIN
+    env_file: .env.letsencrypt
     environment:
       - PUID
       - PGID
@@ -44,10 +42,4 @@ services:
     ports:
       - 80:80
       - 443:443
-    restart: always
-
-volumes:
-  maildata:
-    driver: local
-  maillogs:
-    driver: local
+    restart: unless-stopped
