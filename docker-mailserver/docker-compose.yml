@@ -28,7 +28,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - ./letsencrypt/acme.json:/etc/letsencrypt/acme.json
+      - ./letsencrypt:/etc/letsencrypt
       - ./maildata:/var/mail
       - ./mailstate:/var/mail-state
       - ./maillogs:/var/log/mail
