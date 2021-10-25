@@ -1,0 +1,16 @@
+- hosts: docker
+  become: true
+  roles:
+    - common
+    - docker
+    - restic
+
+- hosts: rebootable
+  become: true
+  tasks:
+    - name: Check reboot if required
+      stat: path=/var/run/reboot-required get_md5=no
+      register: sym
+    - name: Reboot if required
+      reboot:
+      when: sym.stat.exists is defined and sym.stat.exists

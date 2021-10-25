@@ -1,0 +1,9 @@
+roles:
+  - src: https://git.2li.ch/ansible/common.git
+    scm: git
+  - src: https://git.2li.ch/ansible/common-server.git
+    scm: git
+  - src: https://git.2li.ch/ansible/restic.git
+    scm: git
+  - src: https://git.2li.ch/ansible/docker.git
+    scm: git
