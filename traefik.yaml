@@ -15,13 +15,13 @@ certificatesResolvers:
       email: "admin@example.ch"
       storage: "/letsencrypt/acme.json"
       tlsChallenge: true
-      caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      # caserver: "https://acme-staging-v02.api.letsencrypt.org/directory"
 
 tls:
   options:
     default:
       minVersion: VersionTLS12
-      sniStrict : true
+      sniStrict: true
       cipherSuites:
         - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
         - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
