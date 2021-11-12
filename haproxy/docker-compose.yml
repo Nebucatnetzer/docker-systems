@@ -1,7 +1,7 @@
 version: "3.3"
 services:
  gateway:
-  image: haproxy
+  image: haproxy:2.3
   volumes:
     - ./config:/usr/local/etc/haproxy:ro
   ports:
