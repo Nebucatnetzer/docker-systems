@@ -86,3 +86,4 @@ grav/data/
 !grav/data/user/pages
 !grav/data/user/images
 
+.env
