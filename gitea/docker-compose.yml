@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: mariadb
+    image: mariadb:10.6-focal
     volumes:
       - ./db:/var/lib/mysql
     environment:
