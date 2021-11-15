@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 
 services:
   traefik:
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: mariadb
+    image: mariadb:10.5-focal
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: unless-stopped
     volumes:
@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
 
   cron:
-    image: nextcloud:apache
+    image: nextcloud:22.1-apache
     restart: unless-stopped
     volumes:
       - ./data:/var/www/html
