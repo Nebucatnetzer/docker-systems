@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mail:
-    image: docker.io/mailserver/docker-mailserver:9
+    image: docker.io/mailserver/docker-mailserver:9.1.0
     hostname: mail
     domainname: zweili.org
     env_file: mailserver.env
