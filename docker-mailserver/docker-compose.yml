@@ -1,19 +1,6 @@
 version: "3.8"
 
 services:
-  # letsencrypt:
-  #   image: linuxserver/letsencrypt
-  #   container_name: letsencrypt
-  #   cap_add:
-  #     - NET_ADMIN
-  #   env_file: letsencrypt.env
-  #   volumes:
-  #     - ./letsencrypt:/config
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   restart: unless-stopped
-
   mail:
     image: docker.io/mailserver/docker-mailserver:9
     hostname: mail
