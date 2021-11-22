@@ -38,4 +38,8 @@ services:
   whoami:
     image: docker.io/traefik/whoami:latest
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`mail.zweili.org`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.routers.whoami.middlewares=default-headers@file"
