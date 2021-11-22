@@ -1,17 +1,6 @@
 version: "3.8"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - 80
-      - 443
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   # letsencrypt:
   #   image: linuxserver/letsencrypt
   #   container_name: letsencrypt
@@ -37,7 +26,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - ./letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
+      - ../rainloop/letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
       - ./maildata:/var/mail
       - ./mailstate:/var/mail-state
       - ./maillogs:/var/log/mail
