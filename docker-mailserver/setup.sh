@@ -6,13 +6,23 @@
 
 SCRIPT='setup.sh'
 
+WHITE="\e[37m"
+RED="\e[31m"
+PURPLE="\e[35m"
+YELLOW="\e[93m"
+ORANGE="\e[38;5;214m"
+CYAN="\e[96m"
+BLUE="\e[34m"
+LBLUE="\e[94m"
+BOLD="\e[1m"
+RESET="\e[0m"
+
 set -euEo pipefail
 trap '__log_err "${FUNCNAME[0]:-?}" "${BASH_COMMAND:-?}" "${LINENO:-?}" "${?:-?}"' ERR
-trap '_unset_vars || :' EXIT
 
 function __log_err
 {
-  printf "\n––– \e[1m\e[31mUNCHECKED ERROR\e[0m\n%s\n%s\n%s\n%s\n\n" \
+  printf "\n––– ${BOLD}${RED}UNCHECKED ERROR${RESET}\n%s\n%s\n%s\n%s\n\n" \
     "  – script    = ${SCRIPT:-${0}}" \
     "  – function  = ${1} / ${2}" \
     "  – line      = ${3}" \
@@ -24,39 +34,32 @@ the version / tag of docker-mailserver. Please read the
 ly and use ./setup.sh help and read the VERSION section.\n" >&2
 }
 
-function _unset_vars
-{
-  unset CDIR CRI INFO IMAGE_NAME CONTAINER_NAME DEFAULT_CONFIG_PATH
-  unset USE_CONTAINER WISHED_CONFIG_PATH CONFIG_PATH VOLUME USE_TTY
-  unset SCRIPT USING_SELINUX
-}
-
-function _get_current_directory
+function _get_absolute_script_directory
 {
   if dirname "$(readlink -f "${0}")" &>/dev/null
   then
-    CDIR="$(dirname "$(readlink -f "${0}")")"
+    DIR="$(dirname "$(readlink -f "${0}")")"
   elif realpath -e -L "${0}" &>/dev/null
   then
-    CDIR="$(realpath -e -L "${0}")"
-    CDIR="${CDIR%/setup.sh}"
+    DIR="$(realpath -e -L "${0}")"
+    DIR="${DIR%/setup.sh}"
   fi
 }
 
-CDIR="$(pwd)"
-_get_current_directory
+DIR="$(pwd)"
+_get_absolute_script_directory
 
 CRI=
-INFO=
-IMAGE_NAME=
-CONTAINER_NAME=
-DEFAULT_CONFIG_PATH="${CDIR}/config"
-USE_CONTAINER=false
-WISHED_CONFIG_PATH=
 CONFIG_PATH=
-VOLUME=
+CONTAINER_NAME=
+DEFAULT_CONFIG_PATH="${DIR}/config"
+IMAGE_NAME=
+INFO=
+USE_CONTAINER=false
 USE_TTY=
-USING_SELINUX=
+USE_SELINUX=
+VOLUME=
+WISHED_CONFIG_PATH=
 
 function _check_root
 {
@@ -103,53 +106,53 @@ function _inspect
 function _usage
 {
   # shellcheck disable=SC2059
-  printf "\e[35mSETUP\e[31m(\e[93m1\e[31m)
+  printf "${PURPLE}SETUP${RED}(${YELLOW}1${RED})
 
-\e[38;5;214mNAME\e[39m
+${ORANGE}NAME${RESET}
     ${SCRIPT:-${0}} - docker-mailserver administration script
 
-\e[38;5;214mSYNOPSIS\e[39m
-    ./${SCRIPT:-${0}} [ OPTIONS\e[31m...\e[39m ] COMMAND [ help \e[31m|\e[39m ARGUMENTS\e[31m...\e[39m ]
+${ORANGE}SYNOPSIS${RESET}
+    ./${SCRIPT:-${0}} [ OPTIONS${RED}...${RESET} ] COMMAND [ help ${RED}|${RESET} ARGUMENTS${RED}...${RESET} ]
 
-    COMMAND \e[31m:=\e[39m { email \e[31m|\e[39m alias \e[31m|\e[39m quota \e[31m|\e[39m config \e[31m|\e[39m relay \e[31m|\e[39m debug } SUBCOMMAND
+    COMMAND ${RED}:=${RESET} { email ${RED}|${RESET} alias ${RED}|${RESET} quota ${RED}|${RESET} config ${RED}|${RESET} relay ${RED}|${RESET} debug } SUBCOMMAND
 
-\e[38;5;214mDESCRIPTION\e[39m
+${ORANGE}DESCRIPTION${RESET}
     This is the main administration script that you use for all interactions with your
     mail server. Setup, configuration and much more is done with this script.
 
     Please note that the script executes most of the commands inside the container itself.
-    If the image was not found, this script will pull the \e[37m:latest\e[39m tag of
-    \e[37mmailserver/docker-mailserver\e[39m. This tag refers to the latest release,
+    If the image was not found, this script will pull the ${WHITE}:latest${RESET} tag of
+    ${WHITE}mailserver/docker-mailserver${RESET}. This tag refers to the latest release,
     see the tagging convention in the README under
-    \e[34mhttps://github.com/docker-mailserver/docker-mailserver/blob/master/README.md\e[39m
+    ${BLUE}https://github.com/docker-mailserver/docker-mailserver/blob/master/README.md${RESET}
 
     You will be able to see detailed information about the script you're invoking and
-    its arguments by appending \e[37mhelp\e[39m after your command. Currently, this
+    its arguments by appending ${WHITE}help${RESET} after your command. Currently, this
     does not work with all scripts.
 
-\e[38;5;214mVERSION\e[39m
+${ORANGE}VERSION${RESET}
     The current version of this script is backwards compatible with versions of
-    \e[37mdocker-mailserver\e[39m \e[1mafter\e[0m \e[34m8.0.1\e[0m. In case that there is not a more recent release,
-    this script is currently only working with the \e[37m:edge\e[0m tag.
+    ${WHITE}docker-mailserver${RESET} ${BOLD}after${RESET} ${BLUE}8.0.1${RESET}. In case that there is not a more recent release,
+    this script is currently only working with the ${WHITE}:edge${RESET} tag.
 
     You can download the script for your release by substituting TAG from the
     following URL, where TAG looks like 'vX.X.X':
     https://raw.githubusercontent.com/docker-mailserver/docker-mailserver/TAG/setup.sh
 
-\e[38;5;214mOPTIONS\e[39m
-    \e[94mConfig path, container or image adjustments\e[39m
+${ORANGE}OPTIONS${RESET}
+    ${LBLUE}Config path, container or image adjustments${RESET}
         -i IMAGE_NAME
             Provides the name of the docker-mailserver image. The default value is
-            \e[37mdocker.io/mailserver/docker-mailserver:latest\e[39m
+            ${WHITE}docker.io/mailserver/docker-mailserver:latest${RESET}
 
         -c CONTAINER_NAME
             Provides the name of the running container.
 
         -p PATH
             Provides the config folder path. The default is
-            \e[37m${CDIR}/config/\e[39m
+            ${WHITE}${DIR}/config/${RESET}
 
-    \e[94mSELinux\e[39m
+    ${LBLUE}SELinux${RESET}
         -z
             Allows container access to the bind mount content that is shared among
             multiple containers on a SELinux-enabled host.
@@ -158,53 +161,52 @@ function _usage
             Allows container access to the bind mount content that is private and
             unshared with other containers on a SELinux-enabled host.
 
-\e[31m[\e[38;5;214mSUB\e[31m]\e[38;5;214mCOMMANDS\e[39m
-    \e[94mCOMMAND\e[39m email \e[31m:=\e[39m
-        ${0} email add <EMAIL ADDRESS> [<PASSWORD>]
-        ${0} email update <EMAIL ADDRESS> [<PASSWORD>]
-        ${0} email del [ OPTIONS\e[31m...\e[39m ] <EMAIL ADDRESS>
-        ${0} email restrict <add\e[31m|\e[39mdel\e[31m|\e[39mlist> <send\e[31m|\e[39mreceive> [<EMAIL ADDRESS>]
-        ${0} email list
+${RED}[${ORANGE}SUB${RED}]${ORANGE}COMMANDS${RESET}
+    ${LBLUE}COMMAND${RESET} email ${RED}:=${RESET}
+        ${0} email ${CYAN}add${RESET} <EMAIL ADDRESS> [<PASSWORD>]
+        ${0} email ${CYAN}update${RESET} <EMAIL ADDRESS> [<PASSWORD>]
+        ${0} email ${CYAN}del${RESET} [ OPTIONS${RED}...${RESET} ] <EMAIL ADDRESS> [ <EMAIL ADDRESS>${RED}...${RESET} ]
+        ${0} email ${CYAN}restrict${RESET} <add${RED}|${RESET}del${RED}|${RESET}list> <send${RED}|${RESET}receive> [<EMAIL ADDRESS>]
+        ${0} email ${CYAN}list${RESET}
 
-    \e[94mCOMMAND\e[39m alias \e[31m:=\e[39m
-        ${0} alias add <EMAIL ADDRESS> <RECIPIENT>
-        ${0} alias del <EMAIL ADDRESS> <RECIPIENT>
-        ${0} alias list
+    ${LBLUE}COMMAND${RESET} alias ${RED}:=${RESET}
+        ${0} alias ${CYAN}add${RESET} <EMAIL ADDRESS> <RECIPIENT>
+        ${0} alias ${CYAN}del${RESET} <EMAIL ADDRESS> <RECIPIENT>
+        ${0} alias ${CYAN}list${RESET}
 
-    \e[94mCOMMAND\e[39m quota \e[31m:=\e[39m
-        ${0} quota set <EMAIL ADDRESS> [<QUOTA>]
-        ${0} quota del <EMAIL ADDRESS>
+    ${LBLUE}COMMAND${RESET} quota ${RED}:=${RESET}
+        ${0} quota ${CYAN}set${RESET} <EMAIL ADDRESS> [<QUOTA>]
+        ${0} quota ${CYAN}del${RESET} <EMAIL ADDRESS>
 
-    \e[94mCOMMAND\e[39m config \e[31m:=\e[39m
-        ${0} config dkim [ ARGUMENTS\e[31m...\e[39m ]
-        ${0} config ssl <FQDN> (\e[96mATTENTION\e[39m: This is deprecated and will be removed soon.)
+    ${LBLUE}COMMAND${RESET} config ${RED}:=${RESET}
+        ${0} config ${CYAN}dkim${RESET} [ ARGUMENTS${RED}...${RESET} ]
 
-    \e[94mCOMMAND\e[39m relay \e[31m:=\e[39m
-        ${0} relay add-domain <DOMAIN> <HOST> [<PORT>]
-        ${0} relay add-auth <DOMAIN> <USERNAME> [<PASSWORD>]
-        ${0} relay exclude-domain <DOMAIN>
+    ${LBLUE}COMMAND${RESET} relay ${RED}:=${RESET}
+        ${0} relay ${CYAN}add-domain${RESET} <DOMAIN> <HOST> [<PORT>]
+        ${0} relay ${CYAN}add-auth${RESET} <DOMAIN> <USERNAME> [<PASSWORD>]
+        ${0} relay ${CYAN}exclude-domain${RESET} <DOMAIN>
 
-    \e[94mCOMMAND\e[39m debug \e[31m:=\e[39m
-        ${0} debug fetchmail
-        ${0} debug fail2ban [unban <IP>]
-        ${0} debug show-mail-logs
-        ${0} debug inspect
-        ${0} debug login <COMMANDS>
+    ${LBLUE}COMMAND${RESET} debug ${RED}:=${RESET}
+        ${0} debug ${CYAN}fetchmail${RESET}
+        ${0} debug ${CYAN}fail2ban${RESET} [unban <IP>]
+        ${0} debug ${CYAN}show-mail-logs${RESET}
+        ${0} debug ${CYAN}inspect${RESET}
+        ${0} debug ${CYAN}login${RESET} <COMMANDS>
 
-\e[38;5;214mEXAMPLES\e[39m
-    \e[37m./setup.sh email add test@domain.tld\e[39m
-        Add the email account \e[37mtest@domain.tld\e[39m. You will be prompted
+${ORANGE}EXAMPLES${RESET}
+    ${WHITE}./setup.sh email add test@domain.tld${RESET}
+        Add the email account ${WHITE}test@domain.tld${RESET}. You will be prompted
         to input a password afterwards since no password was supplied.
 
-    \e[37m./setup.sh config dkim keysize 2048 domain 'whoami.com,whoareyou.org'\e[39m
+    ${WHITE}./setup.sh config dkim keysize 2048 domain 'whoami.com,whoareyou.org'${RESET}
         Creates keys of length 2048 but in an LDAP setup where domains are not known to
         Postfix by default, so you need to provide them yourself in a comma-separated list.
 
-    \e[37m./setup.sh config dkim help\e[39m
-        This will provide you with a detailed explanation on how to use the \e[37m
-        config dkim\e[39m command, showing what arguments can be passed and what they do.
+    ${WHITE}./setup.sh config dkim help${RESET}
+        This will provide you with a detailed explanation on how to use the ${WHITE}
+        config dkim${RESET} command, showing what arguments can be passed and what they do.
 
-\e[38;5;214mEXIT STATUS\e[39m
+${ORANGE}EXIT STATUS${RESET}
     Exit status is 0 if the command was successful. If there was an unexpected error, an error
     message is shown describing the error. In case of an error, the script will exit with exit
     status 1.
@@ -233,7 +235,7 @@ function _docker_image
     fi
 
     ${CRI} run --rm \
-      -v "${CONFIG_PATH}:/tmp/docker-mailserver${USING_SELINUX}" \
+      -v "${CONFIG_PATH}:/tmp/docker-mailserver${USE_SELINUX}" \
       "${USE_TTY}" "${IMAGE_NAME}" "${@}"
   fi
 }
@@ -289,8 +291,8 @@ function _main
   do
     case ${OPT} in
       i ) IMAGE_NAME="${OPTARG}" ;;
-      z ) USING_SELINUX=":z"     ;;
-      Z ) USING_SELINUX=":Z"     ;;
+      z ) USE_SELINUX=":z"     ;;
+      Z ) USE_SELINUX=":Z"     ;;
       c )
         # container specified, connect to running instance
         CONTAINER_NAME="${OPTARG}"
@@ -300,7 +302,7 @@ function _main
       p )
         case "${OPTARG}" in
           /* ) WISHED_CONFIG_PATH="${OPTARG}"         ;;
-          *  ) WISHED_CONFIG_PATH="${CDIR}/${OPTARG}" ;;
+          *  ) WISHED_CONFIG_PATH="${DIR}/${OPTARG}" ;;
         esac
 
         if [[ ! -d ${WISHED_CONFIG_PATH} ]]
@@ -340,9 +342,9 @@ function _main
       case ${2:-} in
         add      ) shift 2 ; _docker_image addmailuser "${@}" ;;
         update   ) shift 2 ; _docker_image updatemailuser "${@}" ;;
-        del      ) shift 2 ; _docker_image delmailuser "${@}" ;;
+        del      ) shift 2 ; _docker_container delmailuser "${@}" ;;
         restrict ) shift 2 ; _docker_container restrict-access "${@}" ;;
-        list     ) _docker_image listmailuser ;;
+        list     ) _docker_container listmailuser ;;
         *        ) _usage ;;
       esac
       ;;
@@ -367,7 +369,6 @@ function _main
     config )
       case ${2:-} in
         dkim     ) shift 2 ; _docker_image open-dkim "${@}" ;;
-        ssl      ) shift 2 ; _docker_image generate-ssl-certificate "${1}" ;;
         *        ) _usage ;;
       esac
       ;;
