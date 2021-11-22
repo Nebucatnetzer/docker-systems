@@ -1,18 +1,29 @@
 version: "3.8"
 
 services:
-  letsencrypt:
-    image: linuxserver/letsencrypt
-    container_name: letsencrypt
-    cap_add:
-      - NET_ADMIN
-    env_file: letsencrypt.env
-    volumes:
-      - ./letsencrypt:/config
+  traefik:
+    image: "traefik:v2.2"
     ports:
-      - 80:80
-      - 443:443
+      - 80
+      - 443
+    volumes:
+      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
+
+  # letsencrypt:
+  #   image: linuxserver/letsencrypt
+  #   container_name: letsencrypt
+  #   cap_add:
+  #     - NET_ADMIN
+  #   env_file: letsencrypt.env
+  #   volumes:
+  #     - ./letsencrypt:/config
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   restart: unless-stopped
 
   mail:
     image: docker.io/mailserver/docker-mailserver:9.1.0
@@ -26,7 +37,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - ./letsencrypt/etc/letsencrypt:/etc/letsencrypt
+      - ./letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
       - ./maildata:/var/mail
       - ./mailstate:/var/mail-state
       - ./maillogs:/var/log/mail
@@ -34,3 +45,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
+
+  whoami:
+    image: docker.io/traefik/whoami:latest
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`mail.zweili.org`)"
