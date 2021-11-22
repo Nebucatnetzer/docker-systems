@@ -15,7 +15,7 @@ services:
   #   restart: unless-stopped
 
   mail:
-    image: docker.io/mailserver/docker-mailserver:9.1.0
+    image: docker.io/mailserver/docker-mailserver:9
     hostname: mail
     domainname: zweili.org
     env_file: mailserver.env
