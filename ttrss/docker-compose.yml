@@ -13,19 +13,19 @@ services:
     restart: unless-stopped
 
   tt-rss:
-    image: lunik1/tt-rss
+    image: registry.gitlab.com/lunik1/docker-tt-rss@sha256:35dc2dc3697e8c88cb57fbfaf6313ef41bf8fa6583dbb650e9e752587bb7b967
     container_name: tt-rss
     environment:
       - PUID
       - PGID
       - TZ
-      - DB_TYPE
-      - "DB_USER=${MYSQL_USER}"
-      - "DB_NAME=${MYSQL_DATABASE}"
-      - "DB_PASS=${MYSQL_PASSWORD}"
-      - DB_PORT
-      - DB_HOST=db
-      - "SELF_URL_PATH=https://${APP_DOMAIN}"
+      - TTRSS_DB_TYPE
+      - "TTRSS_DB_USER=${MYSQL_USER}"
+      - "TTRSS_DB_NAME=${MYSQL_DATABASE}"
+      - "TTRSS_DB_PASS=${MYSQL_PASSWORD}"
+      - TTRSS_DB_PORT
+      - TTRSS_DB_HOST=db
+      - "TTRSS_SELF_URL_PATH=https://${APP_DOMAIN}"
     volumes:
       - ./config:/config
     depends_on:
