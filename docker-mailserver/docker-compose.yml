@@ -16,6 +16,7 @@ services:
       - ../rainloop/letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
       - ./maildata:/var/mail
       - ./mailstate:/var/mail-state
+      - ./sa-learn:/etc/cron.d/sa-learn
       - ./maillogs:/var/log/mail
       - ./config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
