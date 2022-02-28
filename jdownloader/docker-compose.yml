@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  jdownloader:
+  image: jaymoulin/jdownloader:sha256:dcca7602fb8dae1e4f14b272d553219964be3d4bc957e35a6ad300067ccfccac #2.0.3-amd64
+  restart: always
+  user: 1000:100
+  volumes:
+    - ./config:/opt/JDownloader/app/cfg
+    - ./downloads:/opt/JDownloader/Downloads
+    - ./logs:/opt/JDownloader/app/logs #optional
+    - /etc/localtime:/etc/localtime:ro #optional
+  environment:
+    - MYJD_USER
+    - MYJD_PASSWORD
+    - XDG_DOWNLOAD_DIR="/opt/JDownloader/Downloads" #optional
+  ports:
+    - 3129:3129
