@@ -70,7 +70,7 @@ services:
 
   photoprism:
     ## Use photoprism/photoprism:preview for testing preview builds:
-    image: photoprism/photoprism:latest
+    image: photoprism/photoprism@sha256:e8c7f431c9d5ab6751f375f5004acfeb3a109a639806eb32b3bf2eaa856e9fbd # 220302-bullseye
     depends_on:
       - photoprism-db
     restart: unless-stopped
