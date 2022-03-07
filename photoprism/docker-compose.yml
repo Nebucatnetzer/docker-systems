@@ -75,8 +75,8 @@ services:
       - PHOTOPRISM_SITE_CAPTION="AI-Powered Photos App"
       - PHOTOPRISM_SITE_DESCRIPTION=""
       - PHOTOPRISM_SITE_AUTHOR=""
-      # PHOTOPRISM_UID: 1000
-      # PHOTOPRISM_GID: 1000
+      - PHOTOPRISM_UID=33
+      - PHOTOPRISM_GID=33
       # PHOTOPRISM_UMASK: 0000
     ## Start as a non-root user (see https://docs.docker.com/engine/reference/run/#user)
     #user: "1000:100"
