@@ -82,7 +82,7 @@ services:
     #user: "1000:100"
     working_dir: "/photoprism"
     volumes:
-      - "~/docker_systems/nextcloud/data/data/andreas/files/:/photoprism/nextcloud:ro" # original media files (photos and videos)
+      - "~/docker_systems/nextcloud/data/data/andreas/files/:/photoprism/originals:ro" # original media files (photos and videos)
       - "./storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
 
   mariadb:
