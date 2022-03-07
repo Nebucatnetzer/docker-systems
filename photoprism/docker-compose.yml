@@ -46,11 +46,9 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    ports:
-      - "2342:2342" # HTTP port (host:container)
     environment:
       - PHOTOPRISM_ADMIN_PASSWORD
-      - PHOTOPRISM_SITE_URL=http://nextcloud.2li.local:2342/ # public server URL incl http:// or https:// and /path, :port is optional
+      - PHOTOPRISM_SITE_URL=https://photos.zweili.org/ # public server URL incl http:// or https:// and /path, :port is optional
       - PHOTOPRISM_ORIGINALS_LIMIT=5000 # file size limit for originals in MB (increase for high-res video)
       - PHOTOPRISM_HTTP_COMPRESSION=gzip # improves transfer speed and bandwidth utilization (none or gzip)
       - PHOTOPRISM_DEBUG=false # run in debug mode (shows additional log messages)
@@ -84,6 +82,12 @@ services:
     volumes:
       - "~/docker_systems/nextcloud/data/data/andreas/files/:/photoprism/originals:ro" # original media files (photos and videos)
       - "./storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.rule=Host(`photos.zweili.org`)"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
+      - "traefik.http.routers.nextcloud.middlewares=default-headers@file"
 
   mariadb:
     restart: unless-stopped
