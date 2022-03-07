@@ -122,7 +122,7 @@ services:
 
   photoprism-db:
     restart: unless-stopped
-    image: mariadb:10.6
+    image: mariadb@sha256:e03977921dd2db626ecaf2b4532d94ad751c9582c414185e50d2bb97384d892d #10.6
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
