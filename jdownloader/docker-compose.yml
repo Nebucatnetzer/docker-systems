@@ -6,9 +6,9 @@ services:
     restart: always
     user: 1000:100
     volumes:
-      - jdownloader:/opt/JDownloader/app/cfg
+      - jdownloader_config:/opt/JDownloader/app/cfg
       - downloads:/opt/JDownloader/app/Downloads
-      - jdownloader:/opt/JDownloader/app/logs #optional
+      - jdownloader_logs:/opt/JDownloader/app/logs #optional
       - /etc/localtime:/etc/localtime:ro #optional
     environment:
       - MYJD_USER
@@ -17,11 +17,17 @@ services:
       - 3129:3129
 
 volumes:
-  jdownloader:
+  jdownloader_config:
     driver_opts:
       type: "nfs"
       o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
-      device: ":/server_data/jdownloader"
+      device: ":/server_data/jdownloader/config"
+
+  jdownloader_logs:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
+      device: ":/server_data/jdownloader/logs
 
   downloads:
     driver_opts:
