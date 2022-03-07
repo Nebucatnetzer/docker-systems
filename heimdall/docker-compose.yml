@@ -19,7 +19,7 @@ services:
       - PGID=1001
       - TZ=Europe/Zurich
     volumes:
-      - ./config:/config
+      - heimdall:/config
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.heimdall.rule=Host(`heimdall.2li.ch`)"
@@ -27,3 +27,10 @@ services:
       - "traefik.http.routers.heimdall.tls.certresolver=myresolver"
       - "traefik.http.routers.heimdall.middlewares=default-headers@file"
     restart: unless-stopped
+
+volumes:
+  heimdall:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
+      device: ":/server_data/heimdall"
