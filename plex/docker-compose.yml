@@ -1,4 +1,4 @@
-version: '2'
+version: "3"
 services:
   plex:
     container_name: plex
@@ -11,4 +11,11 @@ services:
     volumes:
       - ./config:/config
       - ./tmp:/transcode
-      - /mnt/media:/mnt/media
+      - media:/mnt/media
+
+volumes:
+  media:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
+      device: ":/media"
