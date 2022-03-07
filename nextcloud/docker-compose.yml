@@ -72,7 +72,7 @@ services:
     ## Use photoprism/photoprism:preview for testing preview builds:
     image: photoprism/photoprism:latest
     depends_on:
-      - mariadb
+      - photoprism-db
     restart: unless-stopped
     security_opt:
       - seccomp:unconfined
