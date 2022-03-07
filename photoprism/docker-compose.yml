@@ -84,10 +84,10 @@ services:
       - "./storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.rule=Host(`photos.zweili.org`)"
-      - "traefik.http.routers.nextcloud.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
-      - "traefik.http.routers.nextcloud.middlewares=default-headers@file"
+      - "traefik.http.routers.photoprism.rule=Host(`photos.zweili.org`)"
+      - "traefik.http.routers.photoprism.entrypoints=websecure"
+      - "traefik.http.routers.photoprism.tls.certresolver=myresolver"
+      - "traefik.http.routers.photoprism.middlewares=default-headers@file"
 
   mariadb:
     restart: unless-stopped
