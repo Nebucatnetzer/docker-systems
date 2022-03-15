@@ -1,16 +1,6 @@
 ---
 version: "3"
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "443:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   heimdall:
     image: linuxserver/heimdall
     container_name: heimdall
@@ -27,6 +17,8 @@ services:
       - "traefik.http.routers.heimdall.tls.certresolver=myresolver"
       - "traefik.http.routers.heimdall.middlewares=default-headers@file"
     restart: unless-stopped
+    networks:
+      - traefik_proxy
 
 volumes:
   heimdall:
@@ -34,3 +26,8 @@ volumes:
       type: "nfs"
       o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
       device: ":/server_data/heimdall"
+
+networks:
+  proxy:
+    external:
+      name: "traefik_proxy"
