@@ -1,23 +1,21 @@
 version: '3'
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "443:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   rss-bridge:
     image: rssbridge/rss-bridge:latest
     volumes:
       - ./whitelist.txt:/app/whitelist.txt
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.rss-bridge.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.rss-bridge.rule=Host(`rss-bridge.2li.ch`)"
       - "traefik.http.routers.rss-bridge.entrypoints=websecure"
       - "traefik.http.routers.rss-bridge.tls.certresolver=myresolver"
       - "traefik.http.routers.rss-bridge.middlewares=default-headers@file"
     restart: unless-stopped
+    networks:
+      - traefik_proxy
+
+networks:
+  proxy:
+    external:
+      name: "traefik_proxy"
+      
