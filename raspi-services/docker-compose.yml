@@ -40,4 +40,5 @@ volumes:
       device: ":/server_data/grav"
 
 networks:
-  proxy:
+  external:
+    name: proxy
