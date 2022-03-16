@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.heimdall.middlewares=default-headers@file"
     restart: unless-stopped
     networks:
-      - traefik_proxy
+      - proxy
 
 volumes:
   heimdall:
@@ -30,4 +30,4 @@ volumes:
 networks:
   proxy:
     external:
-      name: "traefik_proxy"
+      name: "proxy"

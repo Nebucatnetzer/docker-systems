@@ -12,10 +12,10 @@ services:
       - "traefik.http.routers.rss-bridge.middlewares=default-headers@file"
     restart: unless-stopped
     networks:
-      - traefik_proxy
+      - proxy
 
 networks:
   proxy:
     external:
-      name: "traefik_proxy"
+      name: "proxy"
       
