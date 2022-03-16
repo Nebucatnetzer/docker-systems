@@ -4,7 +4,7 @@ services:
   traefik:
     image: "traefik:v2.2"
     ports:
-      - "4433:443"
+      - "443:443"
     volumes:
       - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
       - "./letsencrypt:/letsencrypt"
