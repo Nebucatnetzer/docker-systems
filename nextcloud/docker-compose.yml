@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
 
   cron:
-    image: nextcloud:22.1-apache
+    image: nextcloud@sha256:fbc625b4f744750443930c9e76e757a6eaa28789f6ab0a3e8f34658717f132dd #23.0.3-apache
     restart: unless-stopped
     volumes:
       - ./data:/var/www/html
