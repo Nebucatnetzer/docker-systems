@@ -36,7 +36,7 @@ volumes:
   grav:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,soft,rw,vers=4.1"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
       device: ":/server_data/grav"
 
 networks:
