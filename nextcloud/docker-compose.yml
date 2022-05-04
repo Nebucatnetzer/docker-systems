@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
 
   cron:
-    image: nextcloud:22.1-apache
+    image: nextcloud@sha256:fbc625b4f744750443930c9e76e757a6eaa28789f6ab0a3e8f34658717f132dd #23.0.3-apache
     restart: unless-stopped
     volumes:
       - ./data:/var/www/html
@@ -67,70 +67,3 @@ services:
     depends_on:
       - db
       - redis
-
-  photoprism:
-    ## Use photoprism/photoprism:preview for testing preview builds:
-    image: photoprism/photoprism@sha256:e8c7f431c9d5ab6751f375f5004acfeb3a109a639806eb32b3bf2eaa856e9fbd # 220302-bullseye
-    depends_on:
-      - photoprism-db
-    restart: unless-stopped
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    environment:
-      - PHOTOPRISM_ADMIN_PASSWORD
-      - PHOTOPRISM_SITE_URL=https://photos.zweili.org/ # public server URL incl http:// or https:// and /path, :port is optional
-      - PHOTOPRISM_ORIGINALS_LIMIT=5000 # file size limit for originals in MB (increase for high-res video)
-      - PHOTOPRISM_HTTP_COMPRESSION=gzip # improves transfer speed and bandwidth utilization (none or gzip)
-      - PHOTOPRISM_DEBUG=false # run in debug mode (shows additional log messages)
-      - PHOTOPRISM_PUBLIC=false # no authentication required (disables password protection)
-      - PHOTOPRISM_READONLY=true # don't modify originals directory (reduced functionality)
-      - PHOTOPRISM_EXPERIMENTAL=false # enables experimental features
-      - PHOTOPRISM_DISABLE_CHOWN=false # disables storage permission updates on startup
-      - PHOTOPRISM_DISABLE_WEBDAV=true # disables built-in WebDAV server
-      - PHOTOPRISM_DISABLE_SETTINGS=false # disables Settings in Web UI
-      - PHOTOPRISM_DISABLE_TENSORFLOW=false # disables all features depending on TensorFlow
-      - PHOTOPRISM_DISABLE_FACES=false # disables facial recognition
-      - PHOTOPRISM_DISABLE_CLASSIFICATION=false # disables image classification
-      - PHOTOPRISM_DARKTABLE_PRESETS=false # enables Darktable presets and disables concurrent RAW conversion
-      - PHOTOPRISM_DETECT_NSFW=false # flag photos as private that MAY be offensive (requires TensorFlow)
-      - PHOTOPRISM_UPLOAD_NSFW=true # allows uploads that MAY be offensive
-      - PHOTOPRISM_DATABASE_DRIVER=mysql # use MariaDB 10.5+ or MySQL 8+ instead of SQLite for improved performance
-      - PHOTOPRISM_DATABASE_SERVER=photoprism-db:3306 # MariaDB or MySQL database server (hostname:port)
-      - PHOTOPRISM_DATABASE_NAME=photoprism # MariaDB or MySQL database schema name
-      - PHOTOPRISM_DATABASE_USER=photoprism # MariaDB or MySQL database user name
-      - PHOTOPRISM_DATABASE_PASSWORD
-      - PHOTOPRISM_SITE_TITLE=PhotoPrism
-      - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
-      - PHOTOPRISM_SITE_DESCRIPTION=""
-      - PHOTOPRISM_SITE_AUTHOR=""
-      - PHOTOPRISM_UID=33
-      - PHOTOPRISM_GID=33
-      # PHOTOPRISM_UMASK: 0000
-    ## Start as a non-root user (see https://docs.docker.com/engine/reference/run/#user)
-    #user: "1000:100"
-    working_dir: "/photoprism"
-    volumes:
-      - "./data/data/andreas/files/20_pictures:/photoprism/originals:ro" # original media files (photos and videos)
-      - "./storage:/photoprism/storage" # *writable* storage folder for cache, database, and sidecar files (never remove)
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.photoprism.rule=Host(`photos.zweili.org`)"
-      - "traefik.http.routers.photoprism.entrypoints=websecure"
-      - "traefik.http.routers.photoprism.tls.certresolver=myresolver"
-      - "traefik.http.routers.photoprism.middlewares=default-headers@file"
-
-  photoprism-db:
-    restart: unless-stopped
-    image: mariadb@sha256:e03977921dd2db626ecaf2b4532d94ad751c9582c414185e50d2bb97384d892d #10.6
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    command: mysqld --innodb-buffer-pool-size=128M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    volumes:
-      - "./database:/var/lib/mysql" # important, don't remove
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=photoprism
-      - MYSQL_USER=photoprism
-      - MYSQL_PASSWORD=${PHOTOPRISM_DATABASE_PASSWORD}
