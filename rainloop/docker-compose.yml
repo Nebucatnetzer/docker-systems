@@ -15,7 +15,7 @@ services:
     image: hiloyt/rainloop
     container_name: rainloop
     volumes:
-      - ./data:/rainloop/data
+      - mail/rainloopdata:/rainloop/data
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rainloop.rule=Host(`${APP_DOMAIN}`)"
@@ -36,3 +36,10 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - MYSQL_USER
+
+volumes:
+  mail:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/ttrss/config"

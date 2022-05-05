@@ -14,11 +14,11 @@ services:
       - "993:993"
     volumes:
       - ../rainloop/letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
-      - ./maildata:/var/mail
-      - ./mailstate:/var/mail-state
-      - ./sa-learn:/etc/cron.d/sa-learn
-      - ./maillogs:/var/log/mail
-      - ./config/:/tmp/docker-mailserver/
+      - mail/maildata:/var/mail
+      - mail/mailstate:/var/mail-state
+      - mail/sa-learn:/etc/cron.d/sa-learn
+      - mail/maillogs:/var/log/mail
+      - mail/config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
@@ -31,3 +31,10 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
       - "traefik.http.routers.whoami.middlewares=default-headers@file"
+
+volumes:
+  mail:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/ttrss/config"
