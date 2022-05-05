@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   tt-rss:
-    image: registry.gitlab.com/lunik1/docker-tt-rss@sha256:35dc2dc3697e8c88cb57fbfaf6313ef41bf8fa6583dbb650e9e752587bb7b967
+    image: registry.gitlab.com/lunik1/docker-tt-rss
     container_name: tt-rss
     environment:
       - PUID
@@ -27,7 +27,7 @@ services:
       - TTRSS_DB_HOST=db
       - "TTRSS_SELF_URL_PATH=https://${APP_DOMAIN}"
     volumes:
-      - ./config:/config
+      - tt-rss:/config
     depends_on:
       - db
     links:
@@ -51,3 +51,10 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - MYSQL_USER
+
+volumes:
+  tt-rss:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/ttrss/config"
