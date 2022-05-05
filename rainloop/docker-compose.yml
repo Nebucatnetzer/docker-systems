@@ -15,7 +15,7 @@ services:
     image: hiloyt/rainloop
     container_name: rainloop
     volumes:
-      - mail/rainloopdata:/rainloop/data
+      - rainloopdata:/rainloop/data
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rainloop.rule=Host(`${APP_DOMAIN}`)"
@@ -42,4 +42,4 @@ volumes:
     driver_opts:
       type: "nfs"
       o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
-      device: ":/server_data/mail"
+      device: ":/server_data/docker-mailserver/rainloopdata"
