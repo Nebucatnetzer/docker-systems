@@ -26,7 +26,7 @@ services:
       - SECRET_KEY
       - DISABLE_REGISTRATION
     volumes:
-      - ./data:/data
+      - gitea_data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     labels:
@@ -54,3 +54,10 @@ services:
       - MYSQL_DATABASE
       - MYSQL_USER
     restart: unless-stopped
+
+volumes:
+  gitea_data:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/gitea/data"
