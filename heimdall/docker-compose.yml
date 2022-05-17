@@ -10,15 +10,9 @@ services:
       - TZ=Europe/Zurich
     volumes:
       - heimdall:/config
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.rule=Host(`heimdall.2li.ch`)"
-      - "traefik.http.routers.heimdall.entrypoints=websecure"
-      - "traefik.http.routers.heimdall.tls.certresolver=myresolver"
-      - "traefik.http.routers.heimdall.middlewares=default-headers@file"
     restart: unless-stopped
-    networks:
-      - proxy
+    ports:
+      - 8081:80
 
 volumes:
   heimdall:
@@ -26,8 +20,3 @@ volumes:
       type: "nfs"
       o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
       device: ":/server_data/heimdall"
-
-networks:
-  proxy:
-    external:
-      name: "proxy"

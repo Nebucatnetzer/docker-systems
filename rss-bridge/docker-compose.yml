@@ -4,18 +4,6 @@ services:
     image: rssbridge/rss-bridge:latest
     volumes:
       - ./whitelist.txt:/app/whitelist.txt
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rss-bridge.rule=Host(`rss-bridge.2li.ch`)"
-      - "traefik.http.routers.rss-bridge.entrypoints=websecure"
-      - "traefik.http.routers.rss-bridge.tls.certresolver=myresolver"
-      - "traefik.http.routers.rss-bridge.middlewares=default-headers@file"
     restart: unless-stopped
-    networks:
-      - proxy
-
-networks:
-  proxy:
-    external:
-      name: "proxy"
-      
+    ports:
+      - 8082:80

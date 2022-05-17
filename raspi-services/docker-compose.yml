@@ -1,18 +1,6 @@
 version: "3"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "4433:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-    networks:
-      - proxy
-
   grav:
     build: .
     environment:
@@ -22,15 +10,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grav.rule=Host(`2li.ch`,`www.2li.ch`)"
-      - "traefik.http.routers.grav.entrypoints=websecure"
-      - "traefik.http.routers.grav.tls.certresolver=myresolver"
-      - "traefik.http.services.grav.loadbalancer.server.port=80"
-      - "traefik.http.routers.grav.middlewares=default-headers@file"
-    networks:
-      - proxy
+    ports:
+      - 8080:80
 
 volumes:
   grav:
@@ -38,8 +19,3 @@ volumes:
       type: "nfs"
       o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
       device: ":/server_data/grav"
-
-networks:
-  proxy:
-    external:
-      name: proxy
