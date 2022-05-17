@@ -48,7 +48,7 @@ services:
       - db
       - redis
     volumes:
-      - ./data:/var/www/html
+      - nextcloud_data:/var/www/html
       - ./custom-php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini
     labels:
       - "traefik.enable=true"
@@ -62,8 +62,15 @@ services:
     image: nextcloud@sha256:fbc625b4f744750443930c9e76e757a6eaa28789f6ab0a3e8f34658717f132dd #23.0.3-apache
     restart: unless-stopped
     volumes:
-      - ./data:/var/www/html
+      - nextcloud_data:/var/www/html
     entrypoint: /cron.sh
     depends_on:
       - db
       - redis
+
+volumes:
+  nextcloud_data:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/nextcloud/data"
