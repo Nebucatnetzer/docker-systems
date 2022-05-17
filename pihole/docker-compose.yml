@@ -11,11 +11,23 @@ services:
       - DNS1
       - DNS2
     volumes:
-       - ./etc-pihole:/etc/pihole/
-       - ./etc-dnsmasq.d:/etc/dnsmasq.d/
+       - etc_pihole:/etc/pihole/
+       - etc_dnsmasq:/etc/dnsmasq.d/
     dns:
       - "${DNS3}"
       - "${DNS1}"
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
+
+volumes:
+  etc_pihole:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/pihole/etc-pihole"
+  etc_dnsmasq:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      device: ":/server_data/pihole/etc-dnsmasq"
