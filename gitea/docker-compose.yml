@@ -21,7 +21,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 2222:22
-      - 80:3000
+      - 8080:3000
     links:
       - db:db
     depends_on:
