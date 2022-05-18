@@ -1,16 +1,6 @@
 version: "2"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "443:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   gitea:
     image: gitea/gitea:1.15.6
     environment:
@@ -29,15 +19,9 @@ services:
       - gitea_data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.git.rule=Host(`${APP_DOMAIN}`)"
-      - "traefik.http.routers.git.entrypoints=websecure"
-      - "traefik.http.routers.git.tls.certresolver=myresolver"
-      - "traefik.http.services.git.loadbalancer.server.port=3000"
-      - "traefik.http.routers.git.middlewares=default-headers@file"
     ports:
-      - "2222:22"
+      - 2222:22
+      - 80:3000
     links:
       - db:db
     depends_on:
