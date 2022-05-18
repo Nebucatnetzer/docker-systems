@@ -1,16 +1,6 @@
 version: "2"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "443:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   db:
     image: mariadb:10.5-focal
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
@@ -50,12 +40,8 @@ services:
     volumes:
       - nextcloud_data:/var/www/html
       - ./custom-php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.rule=Host(`${APP_DOMAIN}`)"
-      - "traefik.http.routers.nextcloud.entrypoints=websecure"
-      - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
-      - "traefik.http.routers.nextcloud.middlewares=default-headers@file"
+    ports:
+      - 8080:80
     restart: unless-stopped
 
   cron:
