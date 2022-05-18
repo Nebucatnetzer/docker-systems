@@ -2,16 +2,6 @@
 version: "2"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "443:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   tt-rss:
     image: registry.gitlab.com/lunik1/docker-tt-rss
     container_name: tt-rss
@@ -32,12 +22,8 @@ services:
       - db
     links:
       - db:db
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ttrss.rule=Host(`${APP_DOMAIN}`)"
-      - "traefik.http.routers.ttrss.entrypoints=websecure"
-      - "traefik.http.routers.ttrss.tls.certresolver=myresolver"
-      - "traefik.http.routers.ttrss.middlewares=default-headers@file"
+    ports:
+      - "8080:80"
     restart: always
 
   db:
