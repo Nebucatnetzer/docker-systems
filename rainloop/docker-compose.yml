@@ -1,27 +1,13 @@
 version: "2"
 
 services:
-  traefik:
-    image: "traefik:v2.2"
-    ports:
-      - "4430:443"
-    volumes:
-      - "./traefik.yaml:/etc/traefik/traefik.yaml:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
-
   rainloop:
     image: hiloyt/rainloop
     container_name: rainloop
     volumes:
       - rainloopdata:/rainloop/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rainloop.rule=Host(`${APP_DOMAIN}`)"
-      - "traefik.http.routers.rainloop.entrypoints=websecure"
-      - "traefik.http.routers.rainloop.tls.certresolver=myresolver"
-      - "traefik.http.routers.rainloop.middlewares=default-headers@file"
+    ports:
+      - "8081:80"
     restart: unless-stopped
     links:
       - db:db

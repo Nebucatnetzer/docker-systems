@@ -13,7 +13,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - ../rainloop/letsencrypt/acme.json:/etc/letsencrypt/acme.json:ro
+      - /var/lib/acme/mail.zweili.org:/etc/letsencrypt/live/:ro
       - maildata:/var/mail
       - mailstate:/var/mail-state
       - ./sa-learn:/etc/cron.d/sa-learn
@@ -22,15 +22,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
-
-  whoami:
-    image: docker.io/traefik/whoami:latest
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`mail.zweili.org`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
-      - "traefik.http.routers.whoami.middlewares=default-headers@file"
 
 volumes:
   maildata:
