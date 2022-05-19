@@ -13,7 +13,7 @@ services:
       - "587:587"
       - "993:993"
     volumes:
-      - /var/lib/acme/mail.zweili.org:/etc/letsencrypt/live/:ro
+      - /var/lib/acme/mail.zweili.org:/etc/letsencrypt/live/mail.zweili.org:ro
       - maildata:/var/mail
       - mailstate:/var/mail-state
       - ./sa-learn:/etc/cron.d/sa-learn
