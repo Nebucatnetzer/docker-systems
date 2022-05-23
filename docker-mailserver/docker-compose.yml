@@ -21,6 +21,8 @@ services:
       - config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
+    network:
+      - mail-network
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
 
   snappymail:
@@ -31,6 +33,21 @@ services:
     restart: unless-stopped
     depends_on:
       - mail
+    network:
+      - mail-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  mail-network:
+    name: mail-network
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+          ip_range: 172.18.5.0/24
+          gateway: 172.18.0.1
 
 volumes:
   maildata:
