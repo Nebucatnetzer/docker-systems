@@ -23,6 +23,15 @@ services:
     restart: unless-stopped
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
 
+  snappymail:
+    image: fffrantz/snappymail:2.16.1
+    container_name: snappymail
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    depends_on:
+      - mail
+
 volumes:
   maildata:
     driver_opts:
