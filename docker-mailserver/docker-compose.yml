@@ -21,7 +21,7 @@ services:
       - config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    network:
+    networks:
       - mail-network
     cap_add: ["NET_ADMIN", "SYS_PTRACE"]
 
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mail
-    network:
+    networks:
       - mail-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
