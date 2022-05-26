@@ -17,7 +17,7 @@ services:
       - TTRSS_DB_HOST=db
       - "TTRSS_SELF_URL_PATH=https://${APP_DOMAIN}"
     volumes:
-      - tt-rss:/config
+      - ./config:/config
     depends_on:
       - db
     links:
@@ -37,10 +37,3 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - MYSQL_USER
-
-volumes:
-  tt-rss:
-    driver_opts:
-      type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
-      device: ":/server_data/ttrss/config"
