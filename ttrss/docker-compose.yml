@@ -8,39 +8,18 @@ services:
     environment:
       - PUID
       - PGID
-      - TZ
-      - TTRSS_DB_TYPE
-      - "TTRSS_DB_USER=${MYSQL_USER}"
-      - "TTRSS_DB_NAME=${MYSQL_DATABASE}"
-      - "TTRSS_DB_PASS=${MYSQL_PASSWORD}"
-      - TTRSS_DB_PORT
-      - TTRSS_DB_HOST=db
-      - "TTRSS_SELF_URL_PATH=https://${APP_DOMAIN}"
+      - "TZ=Europe/Zurich"
+      - "TTRSS_DB_TYPE=mysql"
+      - "TTRSS_DB_USER=ttrss"
+      - "TTRSS_DB_NAME=ttrssdb"
+      - TTRSS_DB_PASS
+      - "TTRSS_DB_PORT=3306"
+      - "TTRSS_DB_HOST=host.docker.internal"
+      - "TTRSS_SELF_URL_PATH=https://ttrss.2li.ch"
     volumes:
-      - tt-rss:/config
-    depends_on:
-      - db
-    links:
-      - db:db
+      - ./config:/config
     ports:
       - "8080:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
-
-  db:
-    image: mariadb:10.3-bionic
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: always
-    volumes:
-      - ./db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-
-volumes:
-  tt-rss:
-    driver_opts:
-      type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
-      device: ":/server_data/ttrss/config"
