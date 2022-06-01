@@ -6,37 +6,24 @@ services:
     environment:
       - USER_UID
       - USER_GID
-      - DB_TYPE
-      - "DB_HOST=db:${DB_PORT}"
-      - "DB_NAME=${MYSQL_DATABASE}"
-      - "DB_USER=${MYSQL_USER}"
-      - "DB_PASSWD=${MYSQL_PASSWORD}"
-      - "ROOT_URL=${APP_DOMAIN}"
-      - INSTALL_LOCK=true
+      - "DB_TYPE=mysql"
+      - "DB_HOST=host.docker.internal:3306"
+      - "DB_NAME=giteadb"
+      - "DB_USER=gitea"
+      - DB_PASSWD
+      - "ROOT_URL=git.2li.ch"
+      - "INSTALL_LOCK=true"
       - SECRET_KEY
-      - DISABLE_REGISTRATION
+      - "DISABLE_REGISTRATION=true"
     volumes:
       - gitea_data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - 2222:22
-      - 8080:3000
-    links:
-      - db:db
-    depends_on:
-      - db
-    restart: unless-stopped
-
-  db:
-    image: mariadb:10.6-focal
-    volumes:
-      - ./db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
+      - "2222:22"
+      - "8080:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
 volumes:
