@@ -1,18 +1,6 @@
 version: "2"
 
 services:
-  db:
-    image: mariadb:10.5-focal
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: unless-stopped
-    volumes:
-      - ./db:/var/lib/mysql
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-
   redis:
     image: redis:alpine
     restart: unless-stopped
@@ -21,27 +9,28 @@ services:
     build: ./nextcloud
     environment:
       - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_HOST=db
-      - NEXTCLOUD_ADMIN_USER
+      - "MYSQL_DATABASE=nextcloud"
+      - "MYSQL_USER=nextcloud"
+      - "MYSQL_HOST=host.docker.internal"
+      - "NEXTCLOUD_ADMIN_USER=thedoctor"
       - NEXTCLOUD_ADMIN_PASSWORD
-      - "NEXTCLOUD_TRUSTED_DOMAINS=${APP_DOMAIN} ${NEXTCLOUD_TRUSTED_DOMAINS}"
-      - REDIS_HOST=redis
-      - SMTP_HOST
-      - SMTP_SECURE
-      - SMTP_PORT
-      - SMTP_NAME
+      - "NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.2li.ch nextcloud2.2li.local 10.7.89.103"
+      - "REDIS_HOST=redis"
+      - "SMTP_HOST=mail.infomaniak.com"
+      - "SMTP_SECURE=ssl"
+      - "SMTP_PORT=587"
+      - "SMTP_NAME=admin@2li.ch"
       - SMTP_PASSWORD
-      - MAIL_FORM_ADDRESS
+      - "MAIL_FROM_ADDRESS=admin@2li.ch"
     depends_on:
-      - db
       - redis
     volumes:
       - nextcloud_data:/var/www/html
       - ./custom-php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini
     ports:
       - 8080:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
   cron:
