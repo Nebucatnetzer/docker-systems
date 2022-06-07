@@ -48,5 +48,5 @@ volumes:
   nextcloud_data:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
       device: ":/server_data/nextcloud/data"
