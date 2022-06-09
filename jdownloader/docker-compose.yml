@@ -2,7 +2,7 @@ version: "3"
 
 services:
   jdownloader:
-    image: jaymoulin/jdownloader@sha256:dcca7602fb8dae1e4f14b272d553219964be3d4bc957e35a6ad300067ccfccac #2.0.3-amd64
+    image: jaymoulin/jdownloader
     restart: always
     user: 1000:100
     volumes:
