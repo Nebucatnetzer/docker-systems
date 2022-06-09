@@ -20,17 +20,17 @@ volumes:
   jdownloader_config:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
       device: ":/server_data/jdownloader/config"
 
   jdownloader_logs:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
       device: ":/server_data/jdownloader/logs"
 
   downloads:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
       device: ":/media/downloads"
