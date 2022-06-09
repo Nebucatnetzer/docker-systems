@@ -27,20 +27,20 @@ volumes:
   maildata:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
       device: ":/server_data/docker-mailserver/maildata"
   mailstate:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
       device: ":/server_data/docker-mailserver/mailstate"
   maillogs:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
       device: ":/server_data/docker-mailserver/maillogs"
   config:
     driver_opts:
       type: "nfs"
-      o: "addr=10.7.89.108,nolock,hard,rw,vers=4.1,noatime"
+      o: "addr=10.7.89.108,nolock,hard,rw,noatime"
       device: ":/server_data/docker-mailserver/config"
