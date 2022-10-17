@@ -34,6 +34,7 @@ services:
     restart: unless-stopped
 
   cron:
+    # https://hub.docker.com/_/nextcloud/tags?page=1&name=apache
     image: nextcloud:23.0.10-apache@sha256:e46cb7adc2015f7a464611a2fbcfe37f3bfbf8c5d9afb0c584b131fadb8014b6
     restart: unless-stopped
     volumes:
