@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   cron:
-    image: nextcloud@sha256:e46cb7adc2015f7a464611a2fbcfe37f3bfbf8c5d9afb0c584b131fadb8014b6:23.0.10-apache
+    image: nextcloud:23.0.10-apache@sha256:e46cb7adc2015f7a464611a2fbcfe37f3bfbf8c5d9afb0c584b131fadb8014b6
     restart: unless-stopped
     volumes:
       - nextcloud_data:/var/www/html
