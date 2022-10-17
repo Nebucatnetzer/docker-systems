@@ -18,10 +18,10 @@ services:
       - "REDIS_HOST=redis"
       - "SMTP_HOST=mail.infomaniak.com"
       - "SMTP_SECURE=ssl"
-      - "SMTP_PORT=587"
-      - "SMTP_NAME=admin@2li.ch"
+      - "SMTP_PORT=465"
+      - "SMTP_NAME=admin@zweili.ch"
       - SMTP_PASSWORD
-      - "MAIL_FROM_ADDRESS=admin@2li.ch"
+      - "MAIL_FROM_ADDRESS=admin@zweili.ch"
     depends_on:
       - redis
     volumes:
