@@ -35,7 +35,7 @@ services:
 
   cron:
     # https://hub.docker.com/_/nextcloud/tags?page=1&name=apache
-    image: nextcloud:24.0.6-apache@sha256:72d4ceade8ee1a6efd732ad5a9cdffe393bde11cf1eb0f3a6f26d4aea7686d13
+    image: nextcloud:25.0.0-apache@sha256:c65b3a099746f9168a594adc84f586a6a40719f50889d7814a6b68f6e183b26b
     restart: unless-stopped
     volumes:
       - nextcloud_data:/var/www/html
